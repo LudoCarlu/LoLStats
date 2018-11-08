@@ -4,10 +4,11 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.github.vincebrees.lolstats.R
+import kotlinx.android.synthetic.main.choose_summoner_activity.*
 
 class ChooseSummonerActivity : AppCompatActivity() {
 
-    private var viewModel: ChooseSummonerViewModel? = null
+    private lateinit var viewModel: ChooseSummonerViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,8 +17,17 @@ class ChooseSummonerActivity : AppCompatActivity() {
         initViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        initButton()
+    }
+
+    private fun initButton() {
+        choose_summoner_btn_choose.setOnClickListener { viewModel.onClickedValidate(choose_summoner_edit_text.text.toString().trim()) }
+    }
+
     private fun initViewModel() {
         viewModel = ViewModelProviders.of(this).get(ChooseSummonerViewModel::class.java)
-        viewModel?.let { lifecycle.addObserver(it) }
+        viewModel.let { lifecycle.addObserver(it) }
     }
 }

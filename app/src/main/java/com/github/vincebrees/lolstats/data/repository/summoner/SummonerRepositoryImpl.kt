@@ -3,7 +3,14 @@ package com.github.vincebrees.lolstats.data.repository.summoner
 import com.github.vincebrees.lolstats.data.database.RoomDataSource
 import com.github.vincebrees.lolstats.data.entity.Summoner
 import com.github.vincebrees.lolstats.data.remote.RestApiDataSource
+import com.github.vincebrees.lolstats.domain.response.DataResponse
+import com.github.vincebrees.lolstats.domain.response.ErrorResponse
+import com.github.vincebrees.lolstats.domain.response.SummonerIdErrorCode
+import com.github.vincebrees.lolstats.domain.response.TypeResponse
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,7 +23,16 @@ class SummonerRepositoryImpl @Inject constructor(
 
     val allCompositeDisposable: MutableList<Disposable> = arrayListOf()
 
-    override fun getActualSummoner(): Summoner {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getActualSummoner() = roomDataSource.roomDao().getActualSummoner()
+
+    override fun retrieveSummonerIdByName(name: String): Single<TypeResponse<Summoner>> {
+        return restApiDataSource.getSummonerIdByName(name)
+            .map {response ->
+                if(response.isSuccessful && response.body() != null){
+                    DataResponse(mapper.mapAsSummoner(response.body()!!))
+                }else{
+                    ErrorResponse<Summoner>(SummonerIdErrorCode.TECHNICAL_ERROR)
+                }
+            }
     }
 }

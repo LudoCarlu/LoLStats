@@ -5,6 +5,6 @@ data class RestSummoner(
     val accountId: Int,
     val name: String,
     val profileIconId: Int,
-    val revisionDate: Int,
+    val revisionDate: Long,
     val summonerLevel: Int
 )

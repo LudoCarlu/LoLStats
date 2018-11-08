@@ -1,6 +1,7 @@
 package com.github.vincebrees.lolstats.di
 
 import com.github.vincebrees.lolstats.data.remote.RestApiService
+import com.github.vincebrees.lolstats.data.remote.interceptor.AuthenticationInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -10,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -21,9 +23,15 @@ class RemoteModule {
           .setLenient()
           .create()
 
-  @Provides @Singleton fun provideOkHttpClient(): OkHttpClient =
+    @Provides
+    @Singleton
+    fun provideAuthenticationInterceptor(): AuthenticationInterceptor = AuthenticationInterceptor()
+
+  @Provides @Singleton fun provideOkHttpClient(authenticationInterceptor: AuthenticationInterceptor): OkHttpClient =
       OkHttpClient.Builder()
+          .addInterceptor(authenticationInterceptor)
           .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+          .connectTimeout(30, TimeUnit.SECONDS)
           .build()
 
 
