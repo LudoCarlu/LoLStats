@@ -29,10 +29,18 @@ class SummonerRepositoryImpl @Inject constructor(
         return restApiDataSource.getSummonerIdByName(name)
             .map {response ->
                 if(response.isSuccessful && response.body() != null){
+
+                    saveIntoDb(mapper.mapAsSummoner(response.body()!!))
+                    roomDataSource.roomDao().getActualSummoner()
                     DataResponse(mapper.mapAsSummoner(response.body()!!))
                 }else{
                     ErrorResponse<Summoner>(SummonerIdErrorCode.TECHNICAL_ERROR)
                 }
             }
+    }
+
+    private fun saveIntoDb(summoner: Summoner) {
+        roomDataSource.roomDao().deleteActualSummoner()
+        roomDataSource.roomDao().insertActualSummoner(summoner)
     }
 }

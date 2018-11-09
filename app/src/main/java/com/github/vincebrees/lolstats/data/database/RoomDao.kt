@@ -1,6 +1,7 @@
 package com.github.vincebrees.lolstats.data.database
 
 import android.arch.persistence.room.Dao
+import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
 import com.github.vincebrees.lolstats.data.entity.Summoner
@@ -14,5 +15,8 @@ interface RoomDao {
 
   @Insert
   fun insertActualSummoner(summoner: Summoner)
+
+  @Query(RoomContract.DELETE_SUMMONER)
+  fun deleteActualSummoner()
 }
 

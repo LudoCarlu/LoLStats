@@ -9,6 +9,7 @@ import com.github.vincebrees.lolstats.data.repository.summoner.SummonerRepositor
 import com.github.vincebrees.lolstats.di.LoLStatsApplication
 import com.github.vincebrees.lolstats.domain.response.DataResponse
 import com.github.vincebrees.lolstats.domain.response.ErrorResponse
+import com.github.vincebrees.lolstats.domain.response.SummonerIdErrorCode
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -26,10 +27,12 @@ class ChooseSummonerViewModel : ViewModel(), LifecycleObserver {
     init {
         initializeDagger()
 
-        liveChooseSummonerState.value = ChooseSummonerViewState(false, false, false)
+        liveChooseSummonerState.value = ChooseSummonerViewState(false, null, false)
     }
 
     private fun initializeDagger() = LoLStatsApplication.appComponent.inject(this)
+
+    fun getLiveDataState() = liveChooseSummonerState
 
     fun onClickedValidate(summonerName : String){
         liveChooseSummonerState.value = liveChooseSummonerState.value?.copy(isLoading = true)
@@ -41,15 +44,17 @@ class ChooseSummonerViewModel : ViewModel(), LifecycleObserver {
                 when(typeReponse){
                     is DataResponse -> liveChooseSummonerState.value = liveChooseSummonerState.value?.copy(
                         isLoading = false,
-                        isError = false,
+                        isError = null,
                         isSuccess = true)
-                    is ErrorResponse -> liveChooseSummonerState.value = liveChooseSummonerState.value?.copy(
+                    is ErrorResponse ->  liveChooseSummonerState.value = liveChooseSummonerState.value?.copy(
                         isLoading = false,
-                        isError = true,
+                        isError = typeReponse.errorType as SummonerIdErrorCode,
                         isSuccess = false)
                 }
             }, { t: Throwable? ->
-                liveChooseSummonerState.value = liveChooseSummonerState.value?.copy(isLoading = false, isError = false)
+                liveChooseSummonerState.value = liveChooseSummonerState.value?.copy(
+                    isLoading = false,
+                    isError = SummonerIdErrorCode.TECHNICAL_ERROR)
                 t!!.printStackTrace()
             })
 
