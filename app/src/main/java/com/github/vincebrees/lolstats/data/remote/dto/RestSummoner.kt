@@ -1,4 +1,4 @@
-package com.github.vincebrees.lolstats.data.remote
+package com.github.vincebrees.lolstats.data.remote.dto
 
 data class RestSummoner(
     val id: Int,

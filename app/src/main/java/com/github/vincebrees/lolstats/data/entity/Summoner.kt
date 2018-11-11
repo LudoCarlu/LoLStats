@@ -6,6 +6,7 @@ import com.github.vincebrees.lolstats.data.database.RoomContract
 
 @Entity(tableName = RoomContract.TABLE_SUMMONER)
 data class Summoner(
+    val summonerId: Int,
     val name: String,
     val summonerLevel: Int
 ){

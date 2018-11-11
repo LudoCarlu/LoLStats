@@ -1,6 +1,7 @@
 package com.github.vincebrees.lolstats.di
 
 import com.github.vincebrees.lolstats.data.remote.RestApiService
+import com.github.vincebrees.lolstats.data.remote.RestStaticDataService
 import com.github.vincebrees.lolstats.data.remote.interceptor.AuthenticationInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -34,19 +35,23 @@ class RemoteModule {
           .connectTimeout(30, TimeUnit.SECONDS)
           .build()
 
-
-  @Provides @Singleton fun provideRetrofit(gson: Gson, okHttpClient: OkHttpClient): Retrofit =
+  @Provides @Singleton fun provideRestApiService(gson: Gson, okHttpClient: OkHttpClient): RestApiService =
       Retrofit.Builder()
           .baseUrl("https://euw1.api.riotgames.com")
           .addConverterFactory(GsonConverterFactory.create(gson))
           .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
           .client(okHttpClient)
           .build()
+          .create(RestApiService::class.java)
 
-
-  @Provides @Singleton fun provideRestApiService(retrofit: Retrofit): RestApiService =
-      retrofit.create(RestApiService::class.java)
-
+    @Provides @Singleton fun provideRestStaticDataService(gson: Gson, okHttpClient: OkHttpClient): RestStaticDataService =
+        Retrofit.Builder()
+            .baseUrl("https://ddragon.leagueoflegends.com")
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(RestStaticDataService::class.java)
 }
 
 
