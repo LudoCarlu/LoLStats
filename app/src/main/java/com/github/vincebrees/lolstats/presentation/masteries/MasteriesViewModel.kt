@@ -32,22 +32,25 @@ class MasteriesViewModel : ViewModel(), LifecycleObserver {
     init {
         initializeDagger()
 
-        liveMasteriesState.value = MasteriesViewState(true, false, false)
+        liveMasteriesState.value = MasteriesViewState(true, false)
         val disposable = masteriesUseCase.getListChampion()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ list ->
                 when(list){
-                    is DataResponse -> liveListChampion.value = list.data
+                    is DataResponse -> {
+                        liveListChampion.value = list.data
+                        liveMasteriesState.value = liveMasteriesState.value?.copy(
+                            false,
+                            false)
+                    }
                     is ErrorResponse -> liveMasteriesState.value = liveMasteriesState.value?.copy(
                         isLoading = false,
-                        isError = true,
-                        isEmptyList = false)
+                        isError = true)
                 }
             }, { t: Throwable? -> liveMasteriesState.value = liveMasteriesState.value?.copy(
                     isLoading = false,
-                    isError = true,
-                    isEmptyList = false)
+                    isError = true)
                 Log.d("BUG", t.toString())
             })
         compositeDisposable.add(disposable)

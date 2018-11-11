@@ -3,6 +3,8 @@ package com.github.vincebrees.lolstats.presentation.masteries
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,26 +39,40 @@ class MasteriesFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val linearLayoutManager = LinearLayoutManager(context!!)
+        masteries_list.layoutManager = linearLayoutManager
+        masteries_list.adapter = MasteriesAdapter(context!!, mutableListOf())
+        val dividerItemDecoration = DividerItemDecoration(masteries_list.context, linearLayoutManager.orientation)
+        masteries_list.addItemDecoration(dividerItemDecoration)
     }
 
     private fun initObserver() {
         viewModel.getLiveDataState().observe(this, Observer {
                 viewState -> viewState?.let {
             when{
-                it.isLoading -> showLoading()
                 it.isError -> showError()
-                it.isEmptyList -> showEmptyList()
+            }
+            if(viewState.isLoading){
+                showLoading()
+            }else{
+                hideLoading()
             }
         }
         })
 
         viewModel.getLiveDataListChampionModel().observe(this, Observer {
-                listModel -> setupRecyclerView(listModel)
+                listModel -> if(listModel != null){
+                setupRecyclerView(listModel)
+            }else{
+                showEmptyList()
+            }
         })
     }
 
-    private fun setupRecyclerView(listModel: List<ChampionMasteriesModel>?) {
-
+    private fun setupRecyclerView(listModel: List<ChampionMasteriesModel>) {
+        val adapter = masteries_list.adapter as MasteriesAdapter
+        adapter.listModel = listModel
+        adapter.notifyDataSetChanged()
     }
 
     private fun showEmptyList() {

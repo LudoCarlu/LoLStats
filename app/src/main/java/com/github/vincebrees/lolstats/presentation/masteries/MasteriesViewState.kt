@@ -6,6 +6,5 @@ package com.github.vincebrees.lolstats.presentation.masteries
 
 data class MasteriesViewState(
     val isLoading: Boolean,
-    val isError: Boolean,
-    val isEmptyList: Boolean
+    val isError: Boolean
 )
