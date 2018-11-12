@@ -20,6 +20,7 @@ git clone https://github.com/Vincebrees/LoLStats.git
 ### Clean Architecture Explanation
 
 ![alt text](http://vrgsoft.net/wp-content/uploads/2017/12/fe8c82a32b1548b1a297187e24ae755a.png)
+<u>Image Source : https://vrgsoft.net/blog/clean-architecture-for-android/</u>
 
 ### Stack Technique
 
