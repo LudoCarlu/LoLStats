@@ -8,7 +8,7 @@ class AuthenticationInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         return chain.proceed(chain.request().newBuilder()
-    .header("X-Riot-Token", "RGAPI-2da70cbb-89f9-44bd-a443-28080ca9331a")
+    .header("X-Riot-Token", "RGAPI-caf31850-5009-4b54-b863-9210923265d5")
     .build())
     }
 

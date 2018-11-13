@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.vincebrees.lolstats.R
 import com.github.vincebrees.lolstats.domain.models.ChampionMasteriesModel
+import com.github.vincebrees.lolstats.presentation.detail.DetailActivity
 import kotlinx.android.synthetic.main.masteries_view_holder.view.*
 
 class MasteriesAdapter(val context: Context, var listModel: List<ChampionMasteriesModel>) : RecyclerView.Adapter<MasteriesAdapter.ViewHolder>() {
@@ -27,6 +28,8 @@ class MasteriesAdapter(val context: Context, var listModel: List<ChampionMasteri
                 masteries_champion_name.text = model.name
                 masteries_champion_points.text = model.championPoints.toString()
                 masteries_champion_chest_granted.text = if(model.chestGranted) "Coffre non disponible" else "Coffre disponible"
+
+                itemView.setOnClickListener { context.startActivity(DetailActivity.newInstance(context, model.name)) }
             }
         }
     }
